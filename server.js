@@ -8,6 +8,7 @@ var moment = require('moment');
 var chrono = require('chrono-node');
 moment().format();
 
+var obj ={};
 
 app.get("/", function(req, res, next){
     res.send("Timestamp Microservice");
@@ -16,17 +17,18 @@ app.get("/", function(req, res, next){
 app.get("/:unix", function(req, res, next){
     //converting unix to natural date
     if(!isNaN(req.params.unix)){
-    var naturalDate = moment.unix(req.params.unix).toString().slice(4, 16);
-    res.send(naturalDate);
+        obj.unix = req.params.unix;
+        obj.natural = moment.unix(req.params.unix).toString().slice(4, 16);
     }else{
-        var date = req.params.unix.toString();
-//        var str = date.toString();
-        var spl = date.split(",");
+        obj.natural = req.params.unix;
+
+        var spl = req.params.unix.toString().split(",");
         var split2 = spl[0].split(" ");
         
         var year = spl[1];
         var day = split2[1];
         var month =0;
+
         if(split2[0] == "December"){
             month =12;
         }else if (split2[0] == "January"){
@@ -50,20 +52,16 @@ app.get("/:unix", function(req, res, next){
         }else if (split2[0] == "October"){
             month =10;
         }else if (split2[0] == "November"){
-            month =111;
+            month =11;
         }
+        var natDate = year + "." + month + "." + day;
+        console.log("Nat date:" + natDate);
 
-        //year: spl[1]
-        //month: split2[0]
-        //day: split2[1];
-        res.send(
-            "Month: " + month + "/n" + 
-            "Day: " + split2[1] + "/n" + 
-            "Year: " + spl[1]);
+        obj.unix = new Date(natDate).getTime() / 1000;
+
     }
-//converting natural date to unix
-    //    var abc = chrono.strict.parseDate('2015-12-15');
-  //  console.log( "chrono: " + abc);
+
+        res.send(obj);
 
 });
 
