@@ -8,7 +8,6 @@ module.exports = function(express, app, moment) {
     });
 
     router.get("/:unix", function(req, res, next) {
-        //converting unix to natural date
         obj.unix = null;
         obj.natural = null;
         if (!isNaN(req.params.unix)) {
